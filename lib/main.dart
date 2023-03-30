@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'transaction.dart';
+import 'models/transaction.dart';
+import 'package:intl/intl.dart';
+import 'widgets/transaction_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,11 +22,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  final List<Transaction> transactions = [
-    Transaction(id: '01', title: 'Shoe', amount: 300000, date: DateTime.now()),
-    Transaction(id: '02', title: 'Shirt', amount: 50000, date: DateTime.now()),
-    Transaction(id: '03', title: 'Pants', amount: 60000, date: DateTime.now())
-  ];
+   String titleInput = '';
+  String amountInput = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,26 +33,31 @@ class MyHomePage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              child: Card(
-                child: Text('CHART!'),
+            const Card(
+              child: Text('CHART!'),
+            ),
+            Card(
+              elevation: 5,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children:  [
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Title'),
+                      onChanged: (val) => titleInput = val,
+                    ),
+                    TextField(decoration: InputDecoration(labelText: 'Amount'),
+                      onChanged: (val) => amountInput = val,
+                    ),
+                    TextButton(onPressed: () {
+                      print(titleInput);
+                      print(amountInput);
+                    }, child: Text('Add Transactions'))
+                  ],
+                ),
               ),
             ),
-            Column(
-              children: transactions.map((e) =>
-                  Card(child: Row(
-                    children: [
-                      Text(e.amount.toString()),
-                      Column(
-                        children: [
-                          Text(e.title),
-                          Text(e.date.toString())
-                        ],
-                      )
-                    ],
-                  ),)
-              ).toList(),
-            )
+            TransactionList(),
           ],
         ),// This trailing comma makes auto-formatting nicer for build methods.
     );
