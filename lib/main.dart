@@ -1,3 +1,6 @@
+import 'package:expense_tracker/widgets/user_transactions.dart';
+
+import '/widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
 import 'models/transaction.dart';
 import 'package:intl/intl.dart';
@@ -22,44 +25,23 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-   String titleInput = '';
-  String amountInput = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Flutter App'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Card(
-              child: Text('CHART!'),
-            ),
-            Card(
-              elevation: 5,
-              child: Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children:  [
-                    TextField(
-                      decoration: InputDecoration(labelText: 'Title'),
-                      onChanged: (val) => titleInput = val,
-                    ),
-                    TextField(decoration: InputDecoration(labelText: 'Amount'),
-                      onChanged: (val) => amountInput = val,
-                    ),
-                    TextButton(onPressed: () {
-                      print(titleInput);
-                      print(amountInput);
-                    }, child: Text('Add Transactions'))
-                  ],
-                ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Card(
+                child: Text('CHART!'),
               ),
-            ),
-            TransactionList(),
-          ],
-        ),// This trailing comma makes auto-formatting nicer for build methods.
+              UserTransactions()
+            ],
+          ),
+      ),// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
