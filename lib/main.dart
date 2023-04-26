@@ -1,10 +1,9 @@
-
-
 import '/widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
 import 'models/transaction.dart';
 import 'package:intl/intl.dart';
 import 'widgets/transaction_list.dart';
+import 'widgets/chart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,19 +14,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter App',
+      title: 'Personal Expense',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: const Color( 0xFF3F51B5),
-            secondary: const Color(0xFF00BCD4), // Your accent color
+            primary: const Color(0xFF258EA6),
+            secondary: const Color(0xFF549f93), // Your accent color
           ),
+          primaryColor: const Color(0xFF258EA6),
           textTheme: ThemeData.light().textTheme.copyWith(
-            subtitle1: const TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF212121),
-            ),
-
-          )
-      ),
+                titleLarge: const TextStyle(
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Color(0xFF258EA6),
+                ),
+                // titleMedium: const TextStyle(
+                //   // fontWeight: FontWeight.bold,
+                //   fontSize: 25,
+                //   color: Color(0xFF258EA6),
+                // ),
+              )),
       home: MyHomePage(),
     );
   }
@@ -47,12 +52,22 @@ class _MyHomePageState extends State<MyHomePage> {
     // Transaction(id: '03', title: 'Pants', amount: 60000, date: DateTime.now())
   ];
 
-  void _addNewTransaction(String newTitle, int newAmount) {
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((e) {
+      return e.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
+
+  void _addNewTransaction(String newTitle, int newAmount, DateTime chosenDate) {
     final newTransaction = Transaction(
-        id: DateTime.now.toString(),
+        id: DateTime.now().microsecond.toString(),
         title: newTitle,
         amount: newAmount,
-        date: DateTime.now());
+        date: chosenDate);
 
     setState(() {
       _transactions.add(newTransaction);
@@ -68,27 +83,34 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void deleteTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tx) => tx.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter App'),
+        title: const Text('Expense Tracker'),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Card(
-              child: Text('CHART!'),
-            ),
-            TransactionList(_transactions),
+            // const Card(
+            //   child: Text('CHART!'),
+            // ),
+            Chart(_recentTransactions),
+            TransactionList(_transactions, deleteTransaction),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const  Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () => startAddNewTransaction(context),
-      ),// This trailing comma makes auto-formatting nicer for build methods.
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
